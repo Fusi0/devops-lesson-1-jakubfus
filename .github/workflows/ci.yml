@@ -70,8 +70,8 @@ jobs:
       - run: |
           cat > _site/index.html <<'EOF'
           <h1>Bandit Report</h1>
-          <p> href="tasks-api-3.12-bandit-report.html">Tasks API Bandit Report</a></p>
-          <p> href="title-normalizer-3.12-bandit-report.html">Title Normalizer Bandit Report</a></p>
+          <p><a href="tasks-api-3.12-bandit-report.html">Tasks API Bandit Report</a></p>
+          <p><a href="title-normalizer-3.12-bandit-report.html">Title Normalizer Bandit Report</a></p>
           EOF
 
 
