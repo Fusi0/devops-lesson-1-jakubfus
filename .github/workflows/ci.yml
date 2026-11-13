@@ -1,6 +1,3 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Test and Scan
 
 on:
@@ -11,7 +8,6 @@ on:
       types: [opened, synchronize, closed]
       branches:
         - main
-
 jobs:
   run_tests:
     runs-on: ubuntu-latest
@@ -40,40 +36,39 @@ jobs:
         with:
           name: ${{matrix.service}}-${{matrix.python-version}}-bandit-report
           path: ${{matrix.service}}-${{matrix.python-version}}-bandit-report.html
-
   deploy:
     needs: ["run_tests"]
-
+    #if: github.event.pull_request.merge == true
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deploy-pages.outputs.page_url }}
-
+      url: $ {{ steps.deployment.outputs.page_url }}
     steps:
-      -  uses: actions/download-artifact@v7
-         with:
-          name: tasks-api-3.12-bandit-report 
+      - name: Download Bandit Report as Artifact
+        uses: actions/Download-artifact@v7 
+        with: 
+          name: tasks-api-3.12-bandit-report
           path: _site
-      -  uses: actions/download-artifact@v7
-         with:
-          name: title-normalizer-3.12-bandit-report
-          path: _site
-
-      - uses: actions/upload-pages-artifact@v5
+      - name: Download Bandit Report as Artifact
+        uses: actions/download-artifact@v7
         with:
-          path: _site 
-      - uses: actions/deploy-pages@v5
-
+          name: title-normalizer-3.12-bandit-report
+          path: _site # _site/tasks-api-3.12-bandit-report.html 
       - run: |
-          cat > _site/index.html <<'EOF'
-          <h1>Bandit Report</h1>
-          <p><a href="tasks-api-3.12-bandit-report.html">Tasks API Bandit Report</a></p>
-          <p><a href="title-normalizer-3.12-bandit-report.html">Title Normalizer Bandit Report</a></p>
-          EOF
+            cat > _site/index.html <<'EOF'
+            <h1>Bandit reports </h1>
+            <p><a href="tasks-api-3.12-bandit-report.html">tasks-api</a></p>
+            <p><a href="title-normalizer-3.12-bandit-report.html">title-normalizer</a></p>
+            EOF
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - uses: actions/deploy-pages@v5
+        id: deployment
+   
 
-
-      - id: deploy-pages
-        uses: actions/deploy-pages@v5
+  
