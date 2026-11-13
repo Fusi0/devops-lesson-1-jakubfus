@@ -43,7 +43,7 @@ jobs:
 
   deploy:
     needs: ["run_tests"]
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -60,7 +60,7 @@ jobs:
         with:
           name: title-normalizer-3.12-bandit-report
           path: _site
-          
+
       - run: mv _site/tasks-api-3.12-bandit-report.html _site/index.html
       
       - name: Upload pages artifact
