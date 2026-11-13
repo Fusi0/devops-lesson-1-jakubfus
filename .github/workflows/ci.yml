@@ -7,6 +7,10 @@ on:
   push:
     branches:
       - main
+    pull_request:
+      types: [opened, synchronize, closed]
+      branches:
+        - main
 
 jobs:
   run_tests:
@@ -39,6 +43,7 @@ jobs:
 
   deploy:
     needs: ["run_tests"]
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -48,9 +53,16 @@ jobs:
       - name: Download Bandit Report as Artifact
         uses: actions/download-artifact@v7
         with:
-          name: tasks-api-3.12-bandit-report
+          name: tasks-api-3.12-bandit-report 
           path: _site
+      - name: Download Title Normalizer Bandit Report as Artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: title-normalizer-3.12-bandit-report
+          path: _site
+          
       - run: mv _site/tasks-api-3.12-bandit-report.html _site/index.html
+      
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
