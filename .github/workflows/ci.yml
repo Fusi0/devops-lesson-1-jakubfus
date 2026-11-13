@@ -43,28 +43,37 @@ jobs:
 
   deploy:
     needs: ["run_tests"]
-    # if: github.event.pull_request.merged == true
+
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
 
     steps:
-      - name: Download Bandit Report as Artifact
-        uses: actions/download-artifact@v7
-        with:
+      -  uses: actions/download-artifact@v7
+         with:
           name: tasks-api-3.12-bandit-report 
           path: _site
-      - name: Download Title Normalizer Bandit Report as Artifact
-        uses: actions/download-artifact@v7
-        with:
+      -  uses: actions/download-artifact@v7
+         with:
           name: title-normalizer-3.12-bandit-report
           path: _site
 
-      - run: mv _site/tasks-api-3.12-bandit-report.html _site/index.html
-      
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v5
+      - uses: actions/upload-pages-artifact@v5
         with:
-          path: _site 
+        path: _site 
       - uses: actions/deploy-pages@v5
+
+      - run: |
+          cat _site/index.html <<'EOF'
+          <h1>Bandit Report</h1>
+          <p> href="tasks-api-3.12-bandit-report.html">Tasks API Bandit Report</a></p>
+          <p> href="title-normalizer-3.12-bandit-report.html">Title Normalizer Bandit Report</a></p>
+          'EOF'
+
+
+      - id: deploy-pages
+        uses: actions/deploy-pages@v5
