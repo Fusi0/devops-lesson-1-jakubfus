@@ -68,11 +68,11 @@ jobs:
       - uses: actions/deploy-pages@v5
 
       - run: |
-          cat _site/index.html <<'EOF'
+          cat _site/index.html <<EOF
           <h1>Bandit Report</h1>
           <p> href="tasks-api-3.12-bandit-report.html">Tasks API Bandit Report</a></p>
           <p> href="title-normalizer-3.12-bandit-report.html">Title Normalizer Bandit Report</a></p>
-          'EOF'
+          EOF
 
 
       - id: deploy-pages
